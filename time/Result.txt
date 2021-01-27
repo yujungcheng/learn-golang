@@ -1,0 +1,54 @@
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/time$ go run ./current.go
+2021-01-19 23:25:39.351175516 +1100 AEDT m=+0.000032383
+
+--------------------------------------------------------------------------------
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/time$ go run ./timeout.go
+You have 5 seconds to calculate 19 * 4
+40
+Incorrect.
+30
+Incorrect.
+Time's up!
+
+--------------------------------------------------------------------------------
+// repeatedly executed code after a certain amount of time.
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/time$ go run ./ticker.go
+The time is now 2021-01-20 00:27:43.686560558 +1100 AEDT m=+5.000253947
+The time is now 2021-01-20 00:27:48.686550544 +1100 AEDT m=+10.000243918
+The time is now 2021-01-20 00:27:53.686584127 +1100 AEDT m=+15.000277556
+The time is now 2021-01-20 00:27:58.686522621 +1100 AEDT m=+20.000216004
+The time is now 2021-01-20 00:28:03.686495671 +1100 AEDT m=+25.000189075
+
+--------------------------------------------------------------------------------
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/time$ go run ./parsing.go
+Original time string:  2021-01-02T15:04:05+07:00
+
+2021-01-02 15:04:05 +0700 +0700
+hour is 15
+minute is 4
+second is 5
+day is 2
+month is January (1)
+UNIX time is 1609574645
+week day is Saturday (6)
+
+--------------------------------------------------------------------------------
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/time$ go run ./add_and_subtract.go
+Original time        : 2021-01-02 15:04:05 +0700 +0700
+Add 2 seconds        : 2021-01-02 15:04:07 +0700 +0700
+Del 2 seconds        : 2021-01-02 15:04:03 +0700 +0700
+Add 1 day            : 2021-01-03 15:04:05 +0700 +0700
+Add 1 month          : 2021-02-02 15:04:05 +0700 +0700
+Add 1 year and 1 day : 2022-01-03 15:04:05 +0700 +0700
+Del 1 year           : 2020-01-02 15:04:05 +0700 +0700
+
+New time             : 2021-01-02 15:04:05 +0700 +0700
+Diff with orig time  : 439h4m5s
+Diff with new time   : -439h4m5s
+
+--------------------------------------------------------------------------------

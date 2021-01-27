@@ -1,0 +1,20 @@
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/json$ go run ./encoding.go
+{Name:Tom Age:36 Hobbies:[Cycling Cheese Technology]}
+{"Name":"Tom","Age":36,"Hobbies":["Cycling","Cheese","Technology"]}
+
+--------------------------------------------------------------------------------
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/json$ go run ./struct_tags.go
+{Name:Tom Age:36 Hobbies:[Cycling Cheese Technology]}
+{"name":"Tom","age":36,"hobbies":["Cycling","Cheese","Technology"]}
+
+--------------------------------------------------------------------------------
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/json$ go run ./decoding.go
+{Name:Tom Age:40 Hobbies:[Cycling Cheese Technology]}
+
+--------------------------------------------------------------------------------
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/json$ go run ./receive_json_over_http.go
+{Name:George Ornbo Blog:http://shapeshed.com}

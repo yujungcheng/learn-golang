@@ -1,0 +1,33 @@
+// Basic tcp server
+
+ycheng@nuc:~$ telnet localhost 8000
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+Hello World!
+Connection closed by foreign host.
+
+--------------------------------------------------------------------------------
+// gorouting tcp server.
+
+ycheng@nuc:~$ telnet localhost 8000
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+my message
+my message
+test message
+test message
+
+
+--------------------------------------------------------------------------------
+// manage client connections
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/tcp_chat_server$ go run manage_client_connection.go
+total connections:  1
+total connections:  0
+total connections:  1
+total connections:  0
+total connections:  1
+total connections:  2
+total connections:  1

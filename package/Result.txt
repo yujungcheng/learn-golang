@@ -1,0 +1,3 @@
+ycheng@nuc:/mnt/sdb/Data/learn/golang/package$ go test
+PASS
+ok  	_/mnt/sdb/Data/learn/golang/package	0.001s

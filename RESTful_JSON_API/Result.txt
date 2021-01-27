@@ -1,0 +1,165 @@
+// managing dependencies with "dep"
+go get -u github.com/golang/dep/cmd/dep
+
+ycheng@nuc:~/go/src/github.com/yujungcheng$ mkdir restful-json-api
+
+ycheng@nuc:~/go/src/github.com/yujungcheng/restful-json-api$ dep init
+
+ycheng@nuc:~/go/src/github.com/yujungcheng/restful-json-api$ ls -lh
+total 12K
+-rw-rw-r-- 1 ycheng ycheng  222 Jan 23 09:55 Gopkg.lock
+-rw-rw-r-- 1 ycheng ycheng  655 Jan 23 09:55 Gopkg.toml
+drwxrwxr-x 2 ycheng ycheng 4.0K Jan 23 09:55 vendor
+
+
+--------------------------------------------------------------------------------
+// httprouter package
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/RESTful_JSON_API$ go get github.com/julienschmidt/httprouter
+ycheng@nuc:/mnt/sdb/Data/learn/golang/RESTful_JSON_API$ go run ./httprouter.go
+
+http://localhost:8080/hello/yujungcheng
+
+
+--------------------------------------------------------------------------------
+// Rest API
+
+ycheng@nuc:~/go/src/github.com/yujungcheng/restful-json-api$ curl -is -X GET localhost:8080
+HTTP/1.1 200 OK
+Date: Sun, 24 Jan 2021 07:55:17 GMT
+Content-Length: 10
+Content-Type: text/plain; charset=utf-8
+
+ListTasks
+
+
+(base) ycheng@nuc:~/go/src/github.com/yujungcheng/restful-json-api$ curl -is -X POST localhost:8080
+HTTP/1.1 200 OK
+Date: Sun, 24 Jan 2021 07:54:13 GMT
+Content-Length: 12
+Content-Type: text/plain; charset=utf-8
+
+CreateTasks
+
+
+(base) ycheng@nuc:~/go/src/github.com/yujungcheng/restful-json-api$ curl -is -X GET localhost:8080/yujungcheng
+HTTP/1.1 200 OK
+Date: Sun, 24 Jan 2021 08:04:05 GMT
+Content-Length: 22
+Content-Type: text/plain; charset=utf-8
+
+ReadTasks yujungcheng
+
+
+(base) ycheng@nuc:~/go/src/github.com/yujungcheng/restful-json-api$ curl -is -X PUT localhost:8080/yujungcheng
+HTTP/1.1 200 OK
+Date: Sun, 24 Jan 2021 08:04:31 GMT
+Content-Length: 24
+Content-Type: text/plain; charset=utf-8
+
+UpdateTasks yujungcheng
+
+
+(base) ycheng@nuc:~/go/src/github.com/yujungcheng/restful-json-api$ curl -is -X DELETE localhost:8080/yujungcheng
+HTTP/1.1 200 OK
+Date: Sun, 24 Jan 2021 08:04:47 GMT
+Content-Length: 24
+Content-Type: text/plain; charset=utf-8
+
+DeleteTasks yujungcheng
+
+
+--------------------------------------------------------------------------------
+// Test for a rest api route, verify content type
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/RESTful_JSON_API$ go test rest_api_test.go rest_api.go --run TestListTasksHandler
+--- FAIL: TestListTasksHandler (0.00s)
+    rest_api_test.go:19: handler returned unexpected Content-Type header: got 'text/plain; charset=utf-8', but want 'application/json; charset=utf-8'
+FAIL
+FAIL	command-line-arguments	0.002s
+FAIL
+
+
+--------------------------------------------------------------------------------
+// http json
+ycheng@nuc:~/go/src/github.com/yujungcheng/restful-json-api$ curl -is -X GET localhost:8080
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Mon, 25 Jan 2021 12:38:31 GMT
+Content-Length: 10
+
+ListTasks
+
+
+// test http json
+ycheng@nuc:/mnt/sdb/Data/learn/golang/RESTful_JSON_API$ go test -v http_json.go http_json_test.go
+=== RUN   TestListTasksHandler
+    http_json_test.go:25: Pass test content type
+    http_json_test.go:33: Pass test status code
+    http_json_test.go:36: Passes all tests
+--- PASS: TestListTasksHandler (0.00s)
+=== RUN   TestDeleteTasksHandler
+    http_json_test.go:53: Pass test content type
+    http_json_test.go:66: Pass test body content
+    http_json_test.go:69: Passes all tests
+--- PASS: TestDeleteTasksHandler (0.00s)
+PASS
+ok  	command-line-arguments	0.002s
+
+--------------------------------------------------------------------------------
+// copy store.go, task.go, main.go ycheng@nuc:~/go/src/github.com/yujungcheng/restful-json-api/
+
+ycheng@nuc:~/go/src/github.com/yujungcheng/restful-json-api$ ll
+total 24
+-rw-rw-r-- 1 ycheng ycheng  766 Jan 26 15:11 Gopkg.lock
+-rw-rw-r-- 1 ycheng ycheng  655 Jan 23 09:55 Gopkg.toml
+-rw-rw-r-- 1 ycheng ycheng 1653 Jan 26 15:28 main.go
+-rw-rw-r-- 1 ycheng ycheng   86 Jan 26 15:28 store.go
+-rw-rw-r-- 1 ycheng ycheng 1767 Jan 26 15:28 task.go
+drwxrwxr-x 4 ycheng ycheng 4096 Jan 26 15:11 vendor/
+(base) ycheng@nuc:~/go/src/github.com/yujungcheng/restful-json-api$ dep ensure
+
+ycheng@nuc:~/go/src/github.com/yujungcheng/restful-json-api$ ls -l ./vendor/
+total 8
+drwxrwxr-x 3 ycheng ycheng 4096 Jan 26 15:11 github.com
+drwxrwxr-x 3 ycheng ycheng 4096 Jan 26 15:11 golang.org
+
+
+ycheng@nuc:~/go/src/github.com/yujungcheng/restful-json-api$ go run main.go task.go store.go
+
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/RESTful_JSON_API/data_persistence$ curl -si localhost:8000
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Tue, 26 Jan 2021 04:38:08 GMT
+Content-Length: 2
+
+[]
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/RESTful_JSON_API/data_persistence$ curl -si -X POST -d "{\"title\": \"eat cheese\"}" localhost:8000
+HTTP/1.1 201 Created
+Content-Type: application/json; charset=utf-8
+Date: Tue, 26 Jan 2021 04:39:02 GMT
+Content-Length: 0
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/RESTful_JSON_API/data_persistence$ curl -si localhost:8000
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Tue, 26 Jan 2021 04:39:34 GMT
+Content-Length: 31
+
+[{"id":1,"title":"eat cheese"}]
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/RESTful_JSON_API/data_persistence$ curl -si -X POST -d "{\"title\": \"eat apple\"}" localhost:8000
+HTTP/1.1 201 Created
+Content-Type: application/json; charset=utf-8
+Date: Tue, 26 Jan 2021 04:40:29 GMT
+Content-Length: 0
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/RESTful_JSON_API/data_persistence$ curl -si localhost:8000
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Tue, 26 Jan 2021 04:40:33 GMT
+Content-Length: 60
+
+[{"id":1,"title":"eat cheese"},{"id":2,"title":"eat apple"}]

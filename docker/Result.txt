@@ -1,0 +1,47 @@
+
+root@nuc:/home/ycheng# chmod 666 /var/run/docker.sock
+
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/docker$ docker build -t web_server .
+Sending build context to Docker daemon  3.072kB
+Step 1/5 : from golang:latest
+latest: Pulling from library/golang
+b9a857cbf04d: Pull complete
+d557ee20540b: Pull complete
+3b9ca4f00c2e: Pull complete
+667fd949ed93: Pull complete
+547cc43be03d: Pull complete
+24188b84129f: Pull complete
+6d02d3e4bfed: Pull complete
+Digest: sha256:c161abf0cde3969e05f6914a86cab804b2b0df515f4ff9570475b25547ba7959
+Status: Downloaded newer image for golang:latest
+ ---> 3360fba69704
+Step 2/5 : COPY web_server.go /
+ ---> b032d9ca69a2
+Step 3/5 : RUN go build -o /web_server /web_server.go
+ ---> Running in af031ac69f8a
+Removing intermediate container af031ac69f8a
+ ---> c8c12d186e71
+Step 4/5 : EXPOSE 8000
+ ---> Running in b55f1cd1a22d
+Removing intermediate container b55f1cd1a22d
+ ---> 8fbae6fcc3f8
+Step 5/5 : ENTRYPOINT ["/web_server"]
+ ---> Running in 39e58ca5906d
+Removing intermediate container 39e58ca5906d
+ ---> da106547ac27
+Successfully built da106547ac27
+Successfully tagged web_server:latest
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/docker$ docker images
+REPOSITORY   TAG       IMAGE ID       CREATED          SIZE
+web_server   latest    da106547ac27   31 seconds ago   846MB
+golang       latest    3360fba69704   36 hours ago     839MB
+
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/docker$ docker run -d -p 8000:8000 web_server:latest
+3a5cb7bee2fd6e070e3b46d609df8fdc47dccfbad42940be6b56dab36bd7af03
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/docker$ docker ps
+CONTAINER ID   IMAGE               COMMAND         CREATED          STATUS          PORTS                    NAMES
+3a5cb7bee2fd   web_server:latest   "/web_server"   16 seconds ago   Up 15 seconds   0.0.0.0:8000->8000/tcp   recursing_hofstadter

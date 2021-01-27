@@ -1,0 +1,32 @@
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/regular_expression$ go run ./define_regular_expression.go
+false
+true
+
+--------------------------------------------------------------------------------
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/regular_expression$ go run ./validation.go
+true
+false
+true
+true
+
+--------------------------------------------------------------------------------
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/regular_expression$ go run ./transform.go
+checking username slimshady99
+checking username !asdf£33£3
+- rewrote username !asdf£33£3 to !asdf£33£3
+checking username roger
+checking username Iamthebestuserofthisappevaaaar
+- trimmed username Iamthebestuserofthisappevaaaar to Iamthebestus
+
+--------------------------------------------------------------------------------
+
+cheng@nuc:/mnt/sdb/Data/learn/golang/regular_expression$ go run ./parsing.go
+End child food poverty – no child should be going hungry  |  <h2><a href="/petitions/554276">End child food poverty – no child should be going hungry</a></h2>
+Include self-employed in statutory sick pay during Coronavirus  |  <h2><a href="/petitions/300336">Include self-employed in statutory sick pay during Coronavirus</a></h2>
+Close Schools/Colleges down for an appropriate amount of time amidst COVID19.  |  <h2><a href="/petitions/300403">Close Schools/Colleges down for an appropriate amount of time amidst COVID19.</a></h2>
+Prevent gyms closing due to a spike in Covid 19 cases  |  <h2><a href="/petitions/333869">Prevent gyms closing due to a spike in Covid 19 cases</a></h2>
+Reduce University student tuition fees from £9250 to £3000  |  <h2><a href="/petitions/550344">Reduce University student tuition fees from £9250 to £3000</a></h2>
+Prioritise teachers, school and childcare staff for Covid-19 vaccination  |  <h2><a href="/petitions/554316">Prioritise teachers, school and childcare staff for Covid-19 vaccination</a></h2>

@@ -1,0 +1,23 @@
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/file$ go run ./list.go
+-rw-rw-r-- Result.txt
+-rw-rw-r-- config.json
+-rw-rw-r-- config.toml
+-rw-rw-r-- copy.go
+-rw-rw-r-- create.go
+-rw-rw-r-- delete.go
+-rw-rw-r-- list.go
+-rw-rw-r-- manage_json_config_file.go
+-rw-rw-r-- manage_toml_config_file.go
+-rw-r--r-- new_file.txt
+-rw-rw-r-- read.go
+-rw-rw-r-- write.go
+
+--------------------------------------------------------------------------------
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/file$ go run ./manage_json_config_file.go
+{Name:George Awake:true Hungry:false}
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/file$ go get github.com/BurntSushi/toml
+ycheng@nuc:/mnt/sdb/Data/learn/golang/file$ go run ./manage_toml_config_file.go
+{Name:George Awake:true Hungry:false}

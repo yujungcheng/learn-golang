@@ -1,0 +1,101 @@
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/command_line$ ./command_line
+argument 0 is ./command_line
+(base) ycheng@nuc:/mnt/sdb/Data/learn/golang/command_line$ ./command_line a
+argument 0 is ./command_line
+argument 1 is a
+
+--------------------------------------------------------------------------------
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/command_line$ ./parsing_flags
+value of s: Hello world
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/command_line$ ./parsing_flags -s Goodbye
+value of s: Goodbye
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/command_line$ ./parsing_flags -h
+Usage of ./parsing_flags:
+  -s string
+    	String help text (default "Hello world")
+
+--------------------------------------------------------------------------------
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/command_line$ ./parsing_flag_types -s Goodbye -i 42 -b
+value of s: Goodbye
+value of i: 42
+value of b: true
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/command_line$ ./parsing_flag_types -s Goodbye -i 42
+value of s: Goodbye
+value of i: 42
+value of b: false
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/command_line$ ./parsing_flag_types -i hello
+invalid value "hello" for flag -i: parse error
+Usage of ./parsing_flag_types:
+  -b	Bool help text
+  -i int
+    	Int help text (default 1)
+  -s string
+    	String help text (default "Hello world")
+
+--------------------------------------------------------------------------------
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/command_line$ go build customizing_help_text.go
+ycheng@nuc:/mnt/sdb/Data/learn/golang/command_line$ ./customizing_help_text --help
+Usage example04 [OPTION]
+    An example of customizing usage output
+
+    -s, --s example string argument, default: String help text
+    -i, --i example integer argument, default: Int help text
+    -b, --b example boolean argument, default: Bool help text
+
+--------------------------------------------------------------------------------
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/command_line$ go run ./subcommands.go uppercase -s "my lowercase string"
+MY LOWERCASE STRING
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/command_line$ go run ./subcommands.go uppercase -s aaa
+AAA
+ycheng@nuc:/mnt/sdb/Data/learn/golang/command_line$ go run ./subcommands.go uppercase -s AbA
+ABA
+ycheng@nuc:/mnt/sdb/Data/learn/golang/command_line$ go run ./subcommands.go lowercase -s "AAA"
+aaa
+ycheng@nuc:/mnt/sdb/Data/learn/golang/command_line$ go run ./subcommands.go lowercase -s "ABA"
+aba
+
+--------------------------------------------------------------------------------
+
+ycheng@nuc:~/go$ ll
+total 12
+drwxrwxr-x 2 ycheng ycheng 4096 Jan 13 00:43 bin/
+drwxrwxr-x 2 ycheng ycheng 4096 Jan 13 00:40 pkg/
+drwxrwxr-x 3 ycheng ycheng 4096 Jan 10 23:39 src/
+
+ycheng@nuc:~/go/src/github.com/yujungcheng/helloworld$ cat helloworld.go
+package main
+
+import "fmt"
+
+func main() {
+  fmt.Println("Hello world. You are a Gopher!")
+}
+
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang$ go install github.com/yujungcheng/helloworld
+ycheng@nuc:/mnt/sdb/Data/learn/golang$ helloworld
+Hello world. You are a Gopher!
+
+// Installed into ~/go/bin
+ycheng@nuc:~/go/bin$ ll
+total 17952
+-rwxrwxr-x 1 ycheng ycheng 16349196 Jan 10 23:44 dlv*
+-rwxrwxr-x 1 ycheng ycheng  2030685 Jan 13 00:43 helloworld*
+
+// "go get" vs "go install"
+go install is used to install local packages on your machine. These
+might be files that you have written or files you have gathered from the
+Internet or a fileserver. go install fetches files from a remote server
+(like Github) and installs them, like go install does. The commands
+are roughly equivalent, apart from the fact that go get downloads files as
+well.

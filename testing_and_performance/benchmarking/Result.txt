@@ -1,0 +1,9 @@
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/testing_and_performance/benchmarking$ go test -bench=.
+goos: linux
+goarch: amd64
+BenchmarkStringFromAssignment-8   	  300000	      4619 ns/op
+BenchmarkStringFromAppendJoin-8   	  500000	      2315 ns/op
+BenchmarkStringFromBuffer-8       	 2000000	       877 ns/op
+PASS
+ok  	_/mnt/sdb/Data/learn/golang/testing_and_performance/benchmarking	5.260s

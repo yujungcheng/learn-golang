@@ -1,0 +1,14 @@
+ycheng@nuc:/mnt/sdb/Data/learn/golang/testing_and_performance/test_coverage$ go test
+PASS
+ok  	_/mnt/sdb/Data/learn/golang/testing_and_performance/test_coverage	0.001s
+
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/testing_and_performance/test_coverage$ go test -args greeting_test.go
+PASS
+ok  	_/mnt/sdb/Data/learn/golang/testing_and_performance/test_coverage	0.001s
+
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/testing_and_performance/test_coverage$ go test -cover
+PASS
+coverage: 50.0% of statements
+ok  	_/mnt/sdb/Data/learn/golang/testing_and_performance/test_coverage	0.001s

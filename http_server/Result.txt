@@ -1,0 +1,176 @@
+// Response to multiple type of Content
+
+ycheng@nuc:~/go/bin$ curl -i http://localhost:8000/
+HTTP/1.1 200 OK
+Content-Type: text/plain; charset=utf-8
+Date: Thu, 14 Jan 2021 11:56:40 GMT
+Content-Length: 12
+
+Hello World
+
+
+ycheng@nuc:~/go/bin$ curl -i -H 'Accept: application/json' http://localhost:8000/
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Thu, 14 Jan 2021 11:57:00 GMT
+Content-Length: 26
+
+{"message": "Hello World"}
+
+
+ycheng@nuc:~/go/bin$ curl -i -H 'Accept: application/xml' http://localhost:8000/
+HTTP/1.1 200 OK
+Content-Type: application/xml; charset=utf-8
+Date: Thu, 14 Jan 2021 11:57:34 GMT
+Content-Length: 68
+
+<?xml version="1.0" encoding="utf-8"?><Message>Hello World</Message>
+
+
+--------------------------------------------------------------------------------
+// Response to multiple type of request
+
+ycheng@nuc:~/go/bin$ curl -si -X GET http://localhost:8000/
+HTTP/1.1 200 OK
+Date: Thu, 14 Jan 2021 12:31:39 GMT
+Content-Length: 23
+Content-Type: text/plain; charset=utf-8
+
+Received a GET request
+
+ycheng@nuc:~/go/bin$ curl -si -X POST http://localhost:8000/
+HTTP/1.1 200 OK
+Date: Thu, 14 Jan 2021 12:31:44 GMT
+Content-Length: 24
+Content-Type: text/plain; charset=utf-8
+
+Received a POST request
+
+ycheng@nuc:~/go/bin$ curl -si -X DELETE http://localhost:8000/
+HTTP/1.1 501 Not Implemented
+Date: Thu, 14 Jan 2021 12:31:52 GMT
+Content-Length: 16
+Content-Type: text/plain; charset=utf-8
+
+Not Implemented
+
+
+--------------------------------------------------------------------------------
+// Response multiple data request
+
+ycheng@nuc:~/go/bin$ curl -si "http://localhost:8000/?foo=1&bar=2"
+HTTP/1.1 200 OK
+Date: Thu, 14 Jan 2021 12:56:49 GMT
+Content-Length: 23
+Content-Type: text/plain; charset=utf-8
+
+Received a GET request
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/http_server$ go run ./http_server_multiple_data_request.go
+foo: [1]
+bar: [2]
+
+
+ycheng@nuc:~/go/bin$ curl -si -X POST -d "sent some data" http://localhost:8000/
+HTTP/1.1 200 OK
+Date: Thu, 14 Jan 2021 13:10:19 GMT
+Content-Length: 24
+Content-Type: text/plain; charset=utf-8
+
+Received a POST request
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/http_server$ go run ./http_server_multiple_data_request.go
+sent some data
+
+
+--------------------------------------------------------------------------------
+// Debuging a request
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/http_server$ DEBUG=1 go run ./http_client_debuging_a_request.go
+GET / HTTP/1.1
+Host: ifconfig.co
+User-Agent: Go-http-client/1.1
+Accept-Encoding: gzip
+
+HTTP/2.0 200 OK
+Content-Length: 16
+Cf-Cache-Status: DYNAMIC
+Cf-Ray: 612df53b8996fe68-SYD
+Cf-Request-Id: 07b09799360000fe68c6b8f000000001
+Content-Type: text/plain; charset=utf-8
+Date: Sun, 17 Jan 2021 06:18:16 GMT
+Expect-Ct: max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+Nel: {"report_to":"cf-nel","max_age":604800}
+Report-To: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report?s=53wuHdj%2Fyd444rrJ6IeqzHtC5MWzCjF%2BfRNXXyl9hdr38rLdBOF9zn%2FIM0meccCjH5CFck3HvZDncFf%2Bc0J6hQqxTQ1W92Y9ygHX4A%3D%3D"}],"group":"cf-nel","max_age":604800}
+Server: cloudflare
+Set-Cookie: __cfduid=d68ca3e6f47a99be1e4bf135834c47eba1610864296; expires=Tue, 16-Feb-21 06:18:16 GMT; path=/; domain=.ifconfig.co; HttpOnly; SameSite=Lax
+Strict-Transport-Security: max-age=15768000; includeSubdomains; preload
+
+124.170.234.115
+124.170.234.115
+
+
+ycheng@nuc:/mnt/sdb/Data/learn/golang/http_server$ DEBUG=1 REQUEST_TYPE="application/json" go run ./http_client_debuging_a_request.go
+GET / HTTP/1.1
+Host: ifconfig.co
+User-Agent: Go-http-client/1.1
+Accept: application/json
+Accept-Encoding: gzip
+
+HTTP/2.0 200 OK
+Cf-Cache-Status: DYNAMIC
+Cf-Ray: 612e130d9ebafe78-SYD
+Cf-Request-Id: 07b0aa3c810000fe78ccbb2000000001
+Content-Type: application/json
+Date: Sun, 17 Jan 2021 06:38:38 GMT
+Expect-Ct: max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+Nel: {"report_to":"cf-nel","max_age":604800}
+Report-To: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report?s=KVIVB8vKbMWeWm1PdMlV1stq1xZTn81%2Frvl76aSC%2BAzOp3BcLbd1IAG7nD23FEZTMm5dpXzBPtLEuhCN5facgUcV5qBqam8cnM8rSQ%3D%3D"}],"group":"cf-nel","max_age":604800}
+Server: cloudflare
+Set-Cookie: __cfduid=d55cde23870ad2444b8ce7b3b2ed9ca321610865517; expires=Tue, 16-Feb-21 06:38:37 GMT; path=/; domain=.ifconfig.co; HttpOnly; SameSite=Lax
+Strict-Transport-Security: max-age=15768000; includeSubdomains; preload
+Vary: Accept-Encoding
+
+{
+  "ip": "124.170.234.115",
+  "ip_decimal": 2091575923,
+  "country": "Australia",
+  "country_iso": "AU",
+  "country_eu": false,
+  "region_name": "New South Wales",
+  "region_code": "NSW",
+  "zip_code": "2000",
+  "city": "Sydney",
+  "latitude": -33.8591,
+  "longitude": 151.2002,
+  "time_zone": "Australia/Sydney",
+  "asn": "AS7545",
+  "asn_org": "TPG Telecom Limited",
+  "hostname": "124-170-234-115.tpgi.com.au",
+  "user_agent": {
+    "product": "Go-http-client",
+    "version": "2.0",
+    "raw_value": "Go-http-client/2.0"
+  }
+}{
+  "ip": "124.170.234.115",
+  "ip_decimal": 2091575923,
+  "country": "Australia",
+  "country_iso": "AU",
+  "country_eu": false,
+  "region_name": "New South Wales",
+  "region_code": "NSW",
+  "zip_code": "2000",
+  "city": "Sydney",
+  "latitude": -33.8591,
+  "longitude": 151.2002,
+  "time_zone": "Australia/Sydney",
+  "asn": "AS7545",
+  "asn_org": "TPG Telecom Limited",
+  "hostname": "124-170-234-115.tpgi.com.au",
+  "user_agent": {
+    "product": "Go-http-client",
+    "version": "2.0",
+    "raw_value": "Go-http-client/2.0"
+  }
+}
