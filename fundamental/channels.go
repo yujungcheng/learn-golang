@@ -100,12 +100,12 @@ func main() {
   go ping1(channel1)
   go ping2(channel2)
   select {
-    case msg1 := <- channel1:
-      fmt.Println("Received", msg1)
-    case msg2 := <- channel2:
-      fmt.Println("Received", msg2)
-    case <- time.After(500 * time.Millisecond):
-      fmt.Println("no messages received. giving up.")
+  case msg1 := <- channel1:
+    fmt.Println("Received", msg1)
+  case msg2 := <- channel2:
+    fmt.Println("Received", msg2)
+  case <- time.After(500 * time.Millisecond):
+    fmt.Println("no messages received. giving up.")
   }
 
   // Quitting channels
@@ -120,11 +120,11 @@ func main() {
 
   for {
     select {
-      case <- stop:
-        fmt.Println("main return.")
-        return
-      case  new_msg := <- messages:
-        fmt.Println(new_msg)
+    case <- stop:
+      fmt.Println("main return.")
+      return
+    case  new_msg := <- messages:
+      fmt.Println(new_msg)
     }
   }
 

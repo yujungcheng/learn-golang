@@ -32,15 +32,15 @@ func main() {
   }
 
   switch os.Args[1] {
-    case "uppercase":
-      s := uppercaseCmd.String("s", "", "A string of text to be uppercased")
-      uppercaseCmd.Parse(os.Args[2:])
-      fmt.Println(strings.ToUpper(*s))
-    case "lowercase":
-      s := lowercaseCmd.String("s", "", "A string of text to be lowercased")
-      lowercaseCmd.Parse(os.Args[2:])
-      fmt.Println(strings.ToLower(*s))
-    default:
-      flag.Usage()
+  case "uppercase":
+    s := uppercaseCmd.String("s", "", "A string of text to be uppercased")
+    uppercaseCmd.Parse(os.Args[2:])
+    fmt.Println(strings.ToUpper(*s))
+  case "lowercase":
+    s := lowercaseCmd.String("s", "", "A string of text to be lowercased")
+    lowercaseCmd.Parse(os.Args[2:])
+    fmt.Println(strings.ToLower(*s))
+  default:
+    flag.Usage()
   }
 }

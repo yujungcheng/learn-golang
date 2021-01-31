@@ -2,7 +2,7 @@ package main
 
 import (
   "fmt"
-) 
+)
 
 func main () {
   b := true
@@ -21,16 +21,16 @@ func main () {
     fmt.Println("i less than 2")
   } else if i >= 4 {
     fmt.Println("i greater or equal 4")
-  } 
+  }
 
   j := 2
   switch j {
-    case 2:
-      fmt.Println("Two")
-    case 3:
-      fmt.Println("Three")
-    default:
-      fmt.Println("Unknown!")
+  case 2:
+    fmt.Println("Two")
+  case 3:
+    fmt.Println("Three")
+  default:
+    fmt.Println("Unknown!")
   }
 
   k := 0
