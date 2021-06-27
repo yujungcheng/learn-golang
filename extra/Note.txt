@@ -1,0 +1,66 @@
+https://golang.org/doc/code
+
+
+ycheng@nuc:/mnt/sdb/Data/github/learn.golang/extra$ mkdir hello
+ycheng@nuc:/mnt/sdb/Data/github/learn.golang/extra$ cd hello/
+ycheng@nuc:/mnt/sdb/Data/github/learn.golang/extra/hello$ go mod init github.com/yujungcheng/hello
+go: creating new go.mod: module github.com/yujungcheng/hello
+
+ycheng@nuc:/mnt/sdb/Data/github/learn.golang/extra/hello$ ls -al
+total 12
+drwxrwxr-x 2 ycheng ycheng 4096 Apr 27 01:57 .
+drwxrwxr-x 3 ycheng ycheng 4096 Apr 27 01:58 ..
+-rw-rw-r-- 1 ycheng ycheng   45 Apr 27 01:57 go.mod
+
+ycheng@nuc:/mnt/sdb/Data/github/learn.golang/extra/hello$ cat go.mod
+module github.com/yujungcheng/hello
+
+go 1.15
+
+
+
+ycheng@nuc:/mnt/sdb/Data/github/learn.golang/extra/hello$ go install github.com/yujungcheng/hello
+
+
+ycheng@nuc:/mnt/sdb/Data/github/learn.golang/extra/hello$ hello
+Hello, world.
+ycheng@nuc:/mnt/sdb/Data/github/learn.golang/extra/hello$ which hello
+/home/ycheng/go/bin/hello
+
+
+ycheng@nuc:/mnt/sdb/Data/github/learn.golang/extra/hello$ mkdir morestrings
+ycheng@nuc:/mnt/sdb/Data/github/learn.golang/extra/hello$ vim ./morestrings/reverse.go
+ycheng@nuc:/mnt/sdb/Data/github/learn.golang/extra/hello$ cd morestrings/
+ycheng@nuc:/mnt/sdb/Data/github/learn.golang/extra/hello/morestrings$ go build
+
+ycheng@nuc:/mnt/sdb/Data/github/learn.golang/extra/hello$ go install github.com/yujungcheng/hello
+ycheng@nuc:/mnt/sdb/Data/github/learn.golang/extra/hello$ hello
+Hello, world.
+Hello, Go!
+
+
+
+
+
+ycheng@nuc:/mnt/sdb/Data/github/learn.golang/extra/hello$ vim ./hello.go
+ycheng@nuc:/mnt/sdb/Data/github/learn.golang/extra/hello$ go mod tidy
+go: finding module for package github.com/google/go-cmp/cmp
+go: downloading github.com/google/go-cmp v0.5.5
+go: found github.com/google/go-cmp/cmp in github.com/google/go-cmp v0.5.5
+go: downloading golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543
+
+
+ycheng@nuc:/mnt/sdb/Data/github/learn.golang/extra/hello$ go install github.com/yujungcheng/hello
+ycheng@nuc:/mnt/sdb/Data/github/learn.golang/extra/hello$ hello
+Hello, world.
+Hello, Go!
+  string(
+- 	"Hello World",
++ 	"Hello Go",
+  )
+
+
+
+ycheng@nuc:/mnt/sdb/Data/github/learn.golang/extra/hello$ go clean -modcache
+
+

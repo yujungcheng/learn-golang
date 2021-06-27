@@ -23,4 +23,16 @@ func main() {
   fmt.Println(today, "is after", tomorrow, "=>",today.After(tomorrow))
   fmt.Println(today, "is before", tomorrow, "=>", today.Before(tomorrow))
   fmt.Println(today, "is equal", tomorrow, "=>", today.Equal(tomorrow))
+
+  // add
+  old_tomorrow := tomorrow.Add(24 * time.Hour)
+  new_today := time.Now()
+  old_today := new_today.Add(-24 * time.Hour)
+  new_tomorrow := new_today.Add(24 * time.Hour)
+
+  fmt.Println("Old today: ", old_today)
+  fmt.Println("Old tomorrow: ", old_tomorrow)
+  fmt.Println("New today: ", new_today)
+  fmt.Println("New tomorrow: ", new_tomorrow)
+  
 }

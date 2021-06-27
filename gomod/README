@@ -1,0 +1,20 @@
+# initial module
+ycheng@nuc:/mnt/sdb/Data/github/learn.golang/gomod$ go mod init testmodule
+go: creating new go.mod: module testmodule
+
+
+# add current dependencies to go.mod
+ycheng@nuc:/mnt/sdb/Data/github/learn.golang/gomod$ go get -u ./...
+go: warning: "./..." matched no packages
+go: warning: "./..." matched no packages
+
+
+# create vendor folder and add copies of each dependency in go.mod file
+ycheng@nuc:/mnt/sdb/Data/github/learn.golang/gomod$ go mod vendor
+go: no dependencies to vendor
+
+
+# update a dependency. update dependency version in go.mod file and update code
+# in the vendor folder for the dependency 
+go get -u <repostory url>
+go mod vendor
