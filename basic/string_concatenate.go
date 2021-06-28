@@ -4,6 +4,7 @@ import (
   "fmt"
   "bytes"
   "strings"
+  "strconv"
 )
 
 func main() {
@@ -48,4 +49,20 @@ func main() {
   string_slice := []string {"string1", "string2", "string3"}
   string_join := strings.Join(string_slice, ", ")
   fmt.Println("String join: ", string_join)
+
+
+  // Concatenate with int
+  number := 10
+  text := "emails"
+  concatenate_int := fmt.Sprintf("%d %s", number, text)
+  fmt.Println(concatenate_int)
+
+  concatenate_int = fmt.Sprint(number, " ",text)
+  fmt.Println(concatenate_int)
+
+  concatenate_int = strconv.Itoa(number) + " " + text
+  fmt.Println(concatenate_int)
+
+  concatenate_int = strings.Join([]string{strconv.Itoa(number), " ", text}, "")
+  fmt.Println(concatenate_int)
 }
