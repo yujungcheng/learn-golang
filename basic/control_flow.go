@@ -49,6 +49,27 @@ func main () {
     fmt.Println("value from the array is", n)
   }
 
+  // string iteration 
+  for i, ch := range "a str" {
+    fmt.Printf("%#U starts at byte position %d\n", ch, i)
+  }
+  const s = "b str"
+  for i := 0; i < len(s); i++ {
+    fmt.Printf("%x", s[i])
+  }
+  fmt.Println("")
+
+  // channel iteration
+  ch := make(chan int)
+  go func() {
+    ch <- 10
+    ch <- 20
+    ch <- 30
+  }()
+  for n := range ch {
+    fmt.Println(n)
+  }
+
   defer fmt.Println("I am run after the function completes")
   fmt.Println("Hello world")
 
