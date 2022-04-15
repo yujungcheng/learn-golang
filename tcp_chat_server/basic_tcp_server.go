@@ -1,24 +1,24 @@
 package main
 
 import (
-  "log"
-  "net"
+	"log"
+	"net"
 )
 
 func main() {
-  server, err := net.Listen("tcp", ":8000")
-  if err != nil {
-    log.Fatal(err)
-  }
-  defer server.Close()
+	server, err := net.Listen("tcp", ":8000")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer server.Close()
 
-  for {
-    conn, err := server.Accept()
-    if err != nil {
-      log.Fatal(err)
-    }
+	for {
+		conn, err := server.Accept()
+		if err != nil {
+			log.Fatal(err)
+		}
 
-    conn.Write([]byte("Hello World!\n"))
-    conn.Close()
-  }
+		conn.Write([]byte("Hello World!\n"))
+		conn.Close()
+	}
 }

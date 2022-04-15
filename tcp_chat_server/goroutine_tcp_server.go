@@ -1,31 +1,31 @@
 package main
 
 import (
-  "log"
-  "net"
-  "io"
+	"io"
+	"log"
+	"net"
 )
 
 func main() {
-  server, err := net.Listen("tcp", ":8000")
-  if err != nil {
-    log.Fatal(err)
-  }
-  defer server.Close()
+	server, err := net.Listen("tcp", ":8000")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer server.Close()
 
-  for {
-    conn, err := server.Accept()
-    if err != nil {
-      log.Fatal(err)
-    }
+	for {
+		conn, err := server.Accept()
+		if err != nil {
+			log.Fatal(err)
+		}
 
-    go handleRequest(conn)
-  }
+		go handleRequest(conn)
+	}
 
-  //conn.Write([]byte("Hello World!\n"))
-  //conn.Close()
+	//conn.Write([]byte("Hello World!\n"))
+	//conn.Close()
 }
 
 func handleRequest(conn net.Conn) {
-  io.Copy(conn, conn)
+	io.Copy(conn, conn)
 }

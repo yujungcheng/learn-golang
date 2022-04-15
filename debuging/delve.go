@@ -1,13 +1,13 @@
 package main
 
 import (
-  "fmt"
+	"fmt"
 )
 
 func main() {
-  s := "Hello World"
-  t := "Goodbye World"
+	s := "Hello World"
+	t := "Goodbye World"
 
-  echo(s)
-  echo(t)
+	echo(s)
+	echo(t)
 }

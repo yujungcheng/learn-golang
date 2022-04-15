@@ -1,11 +1,11 @@
 package main
 
 import (
-  "fmt"
+	"fmt"
 )
 
 const greeting string = "Hello, world"
 
 func main() {
-  fmt.Println(greeting)
+	fmt.Println(greeting)
 }

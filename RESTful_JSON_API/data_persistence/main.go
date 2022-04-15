@@ -1,78 +1,78 @@
 package main
 
 import (
-  "encoding/json"
-  "fmt"
-  "github.com/julienschmidt/httprouter"
-  "log"
-  "net/http"
+	"encoding/json"
+	"fmt"
+	"github.com/julienschmidt/httprouter"
+	"log"
+	"net/http"
 )
 
 var store *Store
 
 type Server struct {
-  r *httprouter.Router
+	r *httprouter.Router
 }
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-  w.Header().Set("Content-Type", "application/json; charset=utf-8")
-  s.r.ServeHTTP(w, r)
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	s.r.ServeHTTP(w, r)
 }
 
 func ListTasks(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-  tasks, err := store.GetTasks()
-  if err != nil {
-    log.Fatal(err)
-  }
-  b, err := json.Marshal(tasks)
-  if err != nil {
-    log.Fatal(err)
-  }
-  w.WriteHeader(http.StatusOK)
-  w.Write(b)
+	tasks, err := store.GetTasks()
+	if err != nil {
+		log.Fatal(err)
+	}
+	b, err := json.Marshal(tasks)
+	if err != nil {
+		log.Fatal(err)
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(b)
 }
 
 func CreateTask(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-  t := Task{}
-  decoder := json.NewDecoder(r.Body)
-  err := decoder.Decode(&t)
-  if err != nil {
-    log.Fatal(err)
-  }
-  err = store.CreateTask(&t)
-  if err != nil {
-    log.Fatal(err)
-  }
-  w.WriteHeader(http.StatusCreated)
+	t := Task{}
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&t)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = store.CreateTask(&t)
+	if err != nil {
+		log.Fatal(err)
+	}
+	w.WriteHeader(http.StatusCreated)
 }
 
 func ReadTask(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-  fmt.Fprint(w, "ReadTasks\n")
+	fmt.Fprint(w, "ReadTasks\n")
 }
 
 func UpdateTask(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-  fmt.Fprint(w, "UpdateTasks\n")
+	fmt.Fprint(w, "UpdateTasks\n")
 }
 
 func DeleteTask(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-  fmt.Fprint(w, "DeleteTasks\n")
+	fmt.Fprint(w, "DeleteTasks\n")
 }
 
 func main() {
-  router := httprouter.New()
-  router.GET("/", ListTasks)
-  router.POST("/", CreateTask)
-  router.GET("/:id", ReadTask)
-  router.PUT("/:id", UpdateTask)
-  router.DELETE("/:id", DeleteTask)
+	router := httprouter.New()
+	router.GET("/", ListTasks)
+	router.POST("/", CreateTask)
+	router.GET("/:id", ReadTask)
+	router.PUT("/:id", UpdateTask)
+	router.DELETE("/:id", DeleteTask)
 
-  var err error
-  store, err = NewStore()
-  if err != nil {
-    log.Fatal(err)
-  }
-  store.Initialize()
-  defer store.Close()
+	var err error
+	store, err = NewStore()
+	if err != nil {
+		log.Fatal(err)
+	}
+	store.Initialize()
+	defer store.Close()
 
-  log.Fatal(http.ListenAndServe(":8000", &Server{router}))
+	log.Fatal(http.ListenAndServe(":8000", &Server{router}))
 }

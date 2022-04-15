@@ -1,26 +1,26 @@
 package main
 
 import (
-  "fmt"
-  "io/ioutil"
-  "log"
-  "net/http"
-  "strings"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"strings"
 )
 
 func main() {
-  postData := strings.NewReader(`{"name": "yujung"}`)
-  response, err := http.Post("https://httpbin.org/post", "application/json", postData)
-  if err != nil {
-    log.Fatal(err)
-  }
+	postData := strings.NewReader(`{"name": "yujung"}`)
+	response, err := http.Post("https://httpbin.org/post", "application/json", postData)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-  defer response.Body.Close()
+	defer response.Body.Close()
 
-  body, err := ioutil.ReadAll(response.Body)
-  if err != nil {
-    log.Fatal(err)
-  }
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-  fmt.Printf("%s", body)
+	fmt.Printf("%s", body)
 }
