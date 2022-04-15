@@ -60,4 +60,30 @@ func main() {
 
 	concatenate_int = strings.Join([]string{strconv.Itoa(number), " ", text}, "")
 	fmt.Println(concatenate_int)
+
+	// strings.Builder
+	// https://www.calhoun.io/concatenating-and-building-strings-in-go/
+	// https://www.calhoun.io/6-tips-for-using-strings-in-go/
+	var sb strings.Builder
+	strs := []string{"aaa", "bbb", "ccc"}
+	for _, r := range strs {
+		sb.WriteString(r)
+	}
+	fmt.Println("strings Builder:", sb.String())
+
+	sb.Reset() // reset builder
+
+	runes := []rune{'1', '2', '3', 'a', 'b', 'c'}
+	for _, r := range runes {
+		sb.WriteRune(r)
+	}
+	fmt.Println("strings Builder:", sb.String())
+
+	sb.Reset()
+
+	for i := 5; i >= 1; i-- {
+		fmt.Fprintf(&sb, "%d...", i)
+	}
+	sb.WriteString("ignition")
+	fmt.Println(sb.String())
 }
