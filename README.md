@@ -86,3 +86,9 @@ $ sha1sum hello_world
 
 ## go get (-u option for update dependencies)
 go get -u <package url>
+
+
+## reference.
+https://www.calhoun.io/
+https://opensource.com/tags/go-programming-language
+https://github.com/mactsouk/opensource.com
