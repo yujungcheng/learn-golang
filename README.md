@@ -32,6 +32,8 @@ go run <source code file>
 ## clean up executable files
 go clean
 
+## format code
+gofmt -s -w .
 
 ## go env
 ```shell
