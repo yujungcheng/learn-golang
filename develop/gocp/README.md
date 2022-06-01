@@ -2,6 +2,7 @@
 
 Simple file copy implementation.
 This is an exercise to write go application.
+Developed in go version 1.17.1
 
 #### usage
 ```
