@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	buffer "gocp/bufferAlign"
 	progress "gocp/progressBar"
 	"io"
 	"log"
@@ -10,11 +11,13 @@ import (
 	"path"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 )
 
 var BUFFER_SIZE int
 var BW_LIMIT int
+var DIRECTIO bool
 var SHOW_PROGRESS bool
 var SHOW_HELP bool
 var WRITE_COUNT int64
@@ -34,6 +37,7 @@ func printLog(s ...string) {
 func parseOptions() {
 	buffer_size := flag.Int("buffersize", 4096, "set buffer size")
 	bw_limit := flag.Int("bwlimit", 0, "limit IO bandwidth in MB, no limit by value 0")
+	directio := flag.Bool("directio", false, "direct IO mode")
 	show_progress := flag.Bool("progress", false, "show progress")
 	show_help := flag.Bool("help", false, "show command help info")
 
@@ -41,6 +45,7 @@ func parseOptions() {
 
 	BUFFER_SIZE = *buffer_size
 	BW_LIMIT = *bw_limit
+	DIRECTIO = *directio
 	SHOW_PROGRESS = *show_progress
 	SHOW_HELP = *show_help
 }
@@ -50,6 +55,7 @@ func printHelp() {
 	println("options: ")
 	println("  -buffersize <integer>  : set buffer size")
 	println("  -bwlimit <integer>  : set IO bandwidth limit in MB.")
+	println("  -directio  : use direct IO mode")
 	println("  -progress  : show progress")
 	println("  -help  : show help")
 }
@@ -86,10 +92,9 @@ func printProgressBar(ch chan bool, fileSize int64) {
 	ch <- true
 }
 
-func copyFile(src, dest *os.File) {
-	buffer := make([]byte, BUFFER_SIZE)
+func copyFile(src, dest *os.File, buf []byte) {
 	for {
-		n, err := src.Read(buffer)
+		n, err := src.Read(buf)
 		if err != nil && err != io.EOF {
 			log.Fatal(err)
 		}
@@ -98,16 +103,15 @@ func copyFile(src, dest *os.File) {
 			break
 		}
 
-		if _, err := dest.Write(buffer[:n]); err != nil {
+		if _, err := dest.Write(buf[:n]); err != nil {
 			log.Fatal(err)
 		}
 	}
 }
 
-func copyFileWithWriteCount(src, dest *os.File) {
-	buffer := make([]byte, BUFFER_SIZE)
+func copyFileWithWriteCount(src, dest *os.File, buf []byte) {
 	for {
-		n, err := src.Read(buffer)
+		n, err := src.Read(buf)
 		if err != nil && err != io.EOF {
 			log.Fatal(err)
 		}
@@ -116,7 +120,7 @@ func copyFileWithWriteCount(src, dest *os.File) {
 			break
 		}
 
-		if _, err := dest.Write(buffer[:n]); err != nil {
+		if _, err := dest.Write(buf[:n]); err != nil {
 			log.Fatal(err)
 		}
 		WRITE_COUNT++
@@ -127,7 +131,7 @@ func main() {
 
 	parseOptions()
 
-	optLog := fmt.Sprintf("bufsize=%d, bwlimit=%d, progress=%t, help=%t", BUFFER_SIZE, BW_LIMIT, SHOW_PROGRESS, SHOW_HELP)
+	optLog := fmt.Sprintf("bufsize=%d, bwlimit=%d, directio=%t, progress=%t, help=%t", BUFFER_SIZE, BW_LIMIT, DIRECTIO, SHOW_PROGRESS, SHOW_HELP)
 	printLog(optLog)
 
 	if SHOW_HELP == true {
@@ -154,7 +158,12 @@ func main() {
 		log.Fatal("%s is not a regular file", srcFile)
 	}
 
-	srcFP, err := os.Open(srcFile)
+	var srcFP *os.File
+	if DIRECTIO {
+		srcFP, err = os.OpenFile(srcFile, syscall.O_DIRECT|os.O_RDONLY, 0664)
+	} else {
+		srcFP, err = os.Open(srcFile)
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -167,7 +176,17 @@ func main() {
 		destFile = path.Join(destFile, srcFilename)
 	}
 
-	destFP, err := os.Create(destFile)
+	var destFP *os.File
+	if DIRECTIO {
+		destFP, err = os.Create(destFile) // create file if not exist
+		if err != nil {
+			log.Fatal(err)
+		}
+		destFP.Close()
+		destFP, err = os.OpenFile(destFile, syscall.O_DIRECT|os.O_WRONLY, 0664)
+	} else {
+		destFP, err = os.Create(destFile)
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -178,15 +197,22 @@ func main() {
 	srcSizeStr = "(size=" + srcSizeStr + ")"
 	printLog("Copying", srcFile, "to", destFile, srcSizeStr)
 
+	var buf []byte
+	if DIRECTIO {
+		buf = buffer.GetAlignedBlock(BUFFER_SIZE)
+	} else {
+		buf = make([]byte, BUFFER_SIZE)
+	}
+
 	if SHOW_PROGRESS {
 		ch := make(chan bool)
 		go func() {
 			printProgressBar(ch, srcSize)
 		}()
-		copyFileWithWriteCount(srcFP, destFP)
+		copyFileWithWriteCount(srcFP, destFP, buf)
 		<-ch
 	} else {
-		copyFile(srcFP, destFP)
+		copyFile(srcFP, destFP, buf)
 	}
 	printLog("Copy completed")
 }
