@@ -5,12 +5,12 @@ So I corrected and tested them.
 Also make some improvements.
 
 
-## System Version
+#### System Version
 Ubuntu 18.04.5 LTS
 go version go1.15.6 linux/amd64
 
 
-## install golang
+#### install golang
 1. wget latest golang
 2. tar -xvf <downloaded golang tar file>
 3. mv go /usr/local/
@@ -21,21 +21,20 @@ export GOPATH=$HOME/go
 export PATH=$PATH:$GOROOT:$GOPATH:$GOROOT/bin:$GOPATH/bin
 ```
 
-## build executable file
+#### build executable file
 go build
 
 
-## compile and run (no executable file created)
+#### compile and run (no executable file created)
 go run <source code file>
 
-
-## clean up executable files
+#### clean up executable files
 go clean
 
-## format code
+#### format code
 gofmt -s -w .
 
-## go env
+#### go env
 ```shell
 ycheng@nuc:~$ go env
 GO111MODULE=""
@@ -74,21 +73,21 @@ PKG_CONFIG="pkg-config"
 GOGCCFLAGS="-fPIC -m64 -pthread -fmessage-length=0 -fdebug-prefix-map=/tmp/go-build380422097=/tmp/go-build -gno-record-gcc-switches"
 ```
 
-## compile flags to reduce size of compiled binaries. (omit symbol table,debug info and DWARF symbol table)
+#### compile flags to reduce size of compiled binaries. (omit symbol table,debug info and DWARF symbol table)
 go build -ldflags="-s -w" <go file>
 
 
-## Produce checksum file
+#### Produce checksum file
 $ go build hello_world.go
 $ sha1sum hello_world
 24516517554d610749459ebdaaeaca339457977d  hello_world
 
 
-## go get (-u option for update dependencies)
+#### go get (-u option for update dependencies)
 go get -u <package url>
 
 
-## reference.
+#### reference.
 https://www.calhoun.io/
 https://opensource.com/tags/go-programming-language
 https://github.com/mactsouk/opensource.com
