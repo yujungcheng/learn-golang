@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	progress "gocp/progress"
+	progress "gocp/progressBar"
 	"io"
 	"log"
 	"os"
