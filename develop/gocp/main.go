@@ -35,11 +35,11 @@ func printLog(s ...string) {
 }
 
 func parseOptions() {
-	buffer_size := flag.Int("buffersize", 4096, "set buffer size")
-	bw_limit := flag.Int("bwlimit", 0, "limit IO bandwidth in MB, no limit by value 0")
-	directio := flag.Bool("directio", false, "direct IO mode")
-	show_progress := flag.Bool("progress", false, "show progress")
-	show_help := flag.Bool("help", false, "show command help info")
+	buffer_size := flag.Int("buffersize", 131072, "set buffer size in KB, default 128KB.")
+	bw_limit := flag.Int("bwlimit", 0, "limit IO bandwidth in MB.")
+	directio := flag.Bool("directio", false, "use direct IO mode.")
+	show_progress := flag.Bool("progress", false, "show progress.")
+	show_help := flag.Bool("help", false, "show command help info.")
 
 	flag.Parse()
 
@@ -51,13 +51,12 @@ func parseOptions() {
 }
 
 func printHelp() {
-	println("usage: gocp [options] <source file path> <destination file path>")
+	println("Usage: gocp [options] <source file path> <destination file path>")
 	println("options: ")
 	println("  -buffersize <integer>  : set buffer size")
 	println("  -bwlimit <integer>  : set IO bandwidth limit in MB.")
 	println("  -directio  : use direct IO mode")
 	println("  -progress  : show progress")
-	println("  -help  : show help")
 }
 
 func printProgressBar(ch chan bool, fileSize int64) {
@@ -131,32 +130,70 @@ func main() {
 
 	parseOptions()
 
-	optLog := fmt.Sprintf("bufsize=%d, bwlimit=%d, directio=%t, progress=%t, help=%t", BUFFER_SIZE, BW_LIMIT, DIRECTIO, SHOW_PROGRESS, SHOW_HELP)
-	printLog(optLog)
-
 	if SHOW_HELP == true {
 		printHelp()
 		os.Exit(0)
 	}
+	flag.Usage = printHelp
+
+	optLog := fmt.Sprintf("bufsize=%d, bwlimit=%d, directio=%t, progress=%t, help=%t", BUFFER_SIZE, BW_LIMIT, DIRECTIO, SHOW_PROGRESS, SHOW_HELP)
+	printLog(optLog)
 
 	var srcFile string
 	var destFile string
-
+	var srcSize int64
 	argsFiles := flag.NArg()
 	if argsFiles == 2 {
 		srcFile = flag.Arg(0)
 		destFile = flag.Arg(1)
 	} else {
-		log.Fatal("Invalid file arguments")
+		log.Fatal("Please input one source path and one destionation path.")
 	}
 
-	srcStat, err := os.Stat(srcFile)
+	// check source path
+	if srcStat, err := os.Stat(srcFile); os.IsNotExist(err) {
+		log.Fatal("Source path ", srcFile, " not exist.")
+	} else if srcStat.IsDir() {
+		log.Fatal(srcFile, " is not a regular file")
+	} else {
+		srcSize = srcStat.Size()
+	}
+
+	// check destination path
+	if destStat, err := os.Stat(destFile); os.IsNotExist(err) {
+		if err := os.MkdirAll(destFile, os.ModePerm); err != nil {
+			log.Fatal("Can not create destination directory. ", err)
+		}
+	} else {
+		// if dest is a dir, update to filepath with same source filename
+		if destStat.IsDir() {
+			srcFilename := path.Base(srcFile)
+			destFile = path.Join(destFile, srcFilename)
+		} 
+	}
+
+	var destFP *os.File
+	destFP, err := os.Create(destFile) // create file if not exist
 	if err != nil {
 		log.Fatal(err)
 	}
-	if !srcStat.Mode().IsRegular() {
-		log.Fatal("%s is not a regular file", srcFile)
+	destFP.Close()
+	if DIRECTIO {
+		destFP, err = os.OpenFile(destFile, syscall.O_DIRECT|os.O_WRONLY, 0664)
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		destFP, err = os.Create(destFile)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
+	defer destFP.Close()
+
+	srcSizeStr := strconv.FormatInt(int64(srcSize), 10)
+	srcSizeStr = "(size=" + srcSizeStr + ")"
+	printLog("Copying", srcFile, "to", destFile, srcSizeStr)
 
 	var srcFP *os.File
 	if DIRECTIO {
@@ -168,34 +205,6 @@ func main() {
 		log.Fatal(err)
 	}
 	defer srcFP.Close()
-
-	// if dest is a dir, update to filepath with same source filename
-	destStat, err := os.Stat(destFile)
-	if destStat.IsDir() {
-		srcFilename := path.Base(srcFile)
-		destFile = path.Join(destFile, srcFilename)
-	}
-
-	var destFP *os.File
-	if DIRECTIO {
-		destFP, err = os.Create(destFile) // create file if not exist
-		if err != nil {
-			log.Fatal(err)
-		}
-		destFP.Close()
-		destFP, err = os.OpenFile(destFile, syscall.O_DIRECT|os.O_WRONLY, 0664)
-	} else {
-		destFP, err = os.Create(destFile)
-	}
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer destFP.Close()
-
-	srcSize := srcStat.Size()
-	srcSizeStr := strconv.FormatInt(int64(srcSize), 10)
-	srcSizeStr = "(size=" + srcSizeStr + ")"
-	printLog("Copying", srcFile, "to", destFile, srcSizeStr)
 
 	var buf []byte
 	if DIRECTIO {
