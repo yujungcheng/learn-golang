@@ -5,6 +5,7 @@ import (
 	"fmt"
 	buffer "gocp/bufferAlign"
 	progress "gocp/progressBar"
+	limiter "gocp/ioLimiter"
 	"io"
 	"log"
 	"os"
@@ -16,7 +17,7 @@ import (
 )
 
 var BUFFER_SIZE int
-var BW_LIMIT int
+var IO_LIMIT int
 var DIRECTIO bool
 var SHOW_PROGRESS bool
 var SHOW_HELP bool
@@ -36,7 +37,7 @@ func printLog(s ...string) {
 
 func parseOptions() {
 	buffer_size := flag.Int("buffersize", 128, "set buffer size in KB, default 128KB.")
-	bw_limit := flag.Int("bwlimit", 0, "limit IO bandwidth in MB.")
+	io_limit := flag.Int("iolimit", 0, "limit IO bandwidth in MB.")
 	directio := flag.Bool("directio", false, "use direct IO mode.")
 	show_progress := flag.Bool("progress", false, "show progress.")
 	show_help := flag.Bool("help", false, "show command help info.")
@@ -44,7 +45,7 @@ func parseOptions() {
 	flag.Parse()
 
 	BUFFER_SIZE = *buffer_size * 1024
-	BW_LIMIT = *bw_limit
+	IO_LIMIT = *io_limit * 1024 * 1024
 	DIRECTIO = *directio
 	SHOW_PROGRESS = *show_progress
 	SHOW_HELP = *show_help
@@ -54,7 +55,7 @@ func printHelp() {
 	println("Usage: gocp [options] <source file path> <destination file path>")
 	println("options: ")
 	println("  -buffersize <integer>  : set buffer size in KB, default 128KB.")
-	println("  -bwlimit <integer>  : set IO bandwidth limit in MB.")
+	println("  -iolimit <integer>  : set IO bandwidth limit in MB.")
 	println("  -directio  : use direct IO mode")
 	println("  -progress  : show progress")
 }
@@ -126,6 +127,30 @@ func copyFileWithWriteCount(src, dest *os.File, buf []byte) {
 	}
 }
 
+func copyFileWithIoLimit(src, dest *os.File, buf []byte) {
+	var l limiter.Limiter
+	l.SetLimiter(float64(IO_LIMIT))
+	for {
+		n, err := src.Read(buf)
+		if err != nil && err != io.EOF {
+			log.Fatal(err)
+		}
+
+		if n == 0 {
+			break
+		}
+
+		if err := l.WaitN(n); err != nil {
+			log.Fatal(err)
+		}
+
+		if _, err := dest.Write(buf[:n]); err != nil {
+			log.Fatal(err)
+		}
+		WRITE_COUNT++
+	}
+}
+
 func main() {
 
 	parseOptions()
@@ -136,8 +161,8 @@ func main() {
 	}
 	flag.Usage = printHelp
 
-	optLog := fmt.Sprintf("bufsize=%dKB, bwlimit=%d, directio=%t, progress=%t, help=%t", 
-		BUFFER_SIZE/1024, BW_LIMIT, DIRECTIO, SHOW_PROGRESS, SHOW_HELP)
+	optLog := fmt.Sprintf("bufsize=%dKB, iolimit=%d, directio=%t, progress=%t, help=%t", 
+		BUFFER_SIZE/1024, IO_LIMIT, DIRECTIO, SHOW_PROGRESS, SHOW_HELP)
 	printLog(optLog)
 
 	var srcFile string
@@ -214,12 +239,16 @@ func main() {
 		buf = make([]byte, BUFFER_SIZE)
 	}
 
-	if SHOW_PROGRESS {
+	if SHOW_PROGRESS || IO_LIMIT != 0 {
 		ch := make(chan bool)
 		go func() {
 			printProgressBar(ch, srcSize)
 		}()
-		copyFileWithWriteCount(srcFP, destFP, buf)
+		if IO_LIMIT != 0 {
+			copyFileWithIoLimit(srcFP, destFP, buf)
+		} else {
+			copyFileWithWriteCount(srcFP, destFP, buf)
+		}
 		<-ch
 	} else {
 		copyFile(srcFP, destFP, buf)
