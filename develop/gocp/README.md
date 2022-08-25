@@ -1,16 +1,16 @@
 # gocp
 Simple file copy implementation.
-This is an exercise to write go application.
+This is an exercise to write go applications.
 Developed in go version 1.17.1
 
 
-#### usage
+#### Usage
 ```
 $ go run main.go -help
 $ go run main.go <source file path> <destination directory/file path>
 ```
 
-#### todo features:
+#### Todo features:
 - multiple files copy, able to copy one to many with naming format
 - able to pause and resume by pressing specific key
 - open socket for querying copy process, pid, control from remote server
