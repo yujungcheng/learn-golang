@@ -35,7 +35,7 @@ func printLog(s ...string) {
 }
 
 func parseOptions() {
-	buffer_size := flag.Int("buffersize", 131072, "set buffer size in KB, default 128KB.")
+	buffer_size := flag.Int("buffersize", 128, "set buffer size in KB, default 128KB.")
 	bw_limit := flag.Int("bwlimit", 0, "limit IO bandwidth in MB.")
 	directio := flag.Bool("directio", false, "use direct IO mode.")
 	show_progress := flag.Bool("progress", false, "show progress.")
@@ -43,7 +43,7 @@ func parseOptions() {
 
 	flag.Parse()
 
-	BUFFER_SIZE = *buffer_size
+	BUFFER_SIZE = *buffer_size * 1024
 	BW_LIMIT = *bw_limit
 	DIRECTIO = *directio
 	SHOW_PROGRESS = *show_progress
@@ -53,7 +53,7 @@ func parseOptions() {
 func printHelp() {
 	println("Usage: gocp [options] <source file path> <destination file path>")
 	println("options: ")
-	println("  -buffersize <integer>  : set buffer size")
+	println("  -buffersize <integer>  : set buffer size in KB, default 128KB.")
 	println("  -bwlimit <integer>  : set IO bandwidth limit in MB.")
 	println("  -directio  : use direct IO mode")
 	println("  -progress  : show progress")
@@ -136,7 +136,8 @@ func main() {
 	}
 	flag.Usage = printHelp
 
-	optLog := fmt.Sprintf("bufsize=%d, bwlimit=%d, directio=%t, progress=%t, help=%t", BUFFER_SIZE, BW_LIMIT, DIRECTIO, SHOW_PROGRESS, SHOW_HELP)
+	optLog := fmt.Sprintf("bufsize=%dKB, bwlimit=%d, directio=%t, progress=%t, help=%t", 
+		BUFFER_SIZE/1024, BW_LIMIT, DIRECTIO, SHOW_PROGRESS, SHOW_HELP)
 	printLog(optLog)
 
 	var srcFile string
